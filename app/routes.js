@@ -55,4 +55,10 @@ module.exports = function (app) {
   app.route("/api/puppeteer").post(puppeteer.update);
   app.route("/api/puppeteer").delete(puppeteer.delete);
   app.route("/api/puppeteer/execution").post(puppeteer.execution);
+
+  var puppeteer_detail = require("./controller/puppeteer_detail");
+  app.route("/api/puppeteer/detail").get(puppeteer_detail.get);
+  app.route("/api/puppeteer/detail").put(puppeteer_detail.insert);
+  app.route("/api/puppeteer/detail").post(puppeteer_detail.update);
+  app.route("/api/puppeteer/detail").delete(puppeteer_detail.delete);
 };
