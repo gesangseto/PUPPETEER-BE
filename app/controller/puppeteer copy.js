@@ -13,8 +13,6 @@ puppeteer.use(StealthPlugin());
 const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker");
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 
-const chrome = require("chrome-cookies-secure");
-
 exports.execution = async function (req, res) {
   let error_step = 0;
   var data = { data: req.body };
@@ -68,16 +66,14 @@ exports.execution = async function (req, res) {
     console.log("======================== START ==========================");
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
-    if (_header.use_cookies) {
-      const cookies = await getCookiesChroome(_header.puppeteer_url);
-      await page.setCookie(...cookies);
-    }
     await page.goto(_header.puppeteer_url, { waitUntil: "networkidle0" });
     await page.screenshot({
       path: `screenshoot/${puppeteer_id}_${0}.png`,
     });
     console.log("step", 0);
-    // page.setViewport({ width: 1366, height: 768 });
+    // const cookies = await getCookiesChroome(_header.puppeteer_url);
+    // await page.setCookie(...cookies);
+    page.setViewport({ width: 1366, height: 768 });
     for (let i = 0; i < step.length; ++i) {
       let it = step[i];
       error_step = it.step;
@@ -104,10 +100,7 @@ exports.execution = async function (req, res) {
         let exec_time = moment(it.execution_time ?? now).format(
           "YYYY-MM-DD HH:mm:ss"
         );
-        var ms = moment(now, "YYYY-MM-DD HH:mm:ss").diff(
-          moment(exec_time, "YYYY-MM-DD HH:mm:ss")
-        );
-        var delay_duration = moment.duration(ms);
+        var delay_duration = moment.duration(exec_time.diff(now));
         if (delay_duration > 0) {
           await utils.delay(delay_duration);
         }
@@ -377,17 +370,3 @@ exports.delete = async function (req, res) {
     return response.response(data, res);
   }
 };
-
-function getCookiesChroome(url) {
-  return new Promise(
-    (resolve) =>
-      chrome.getCookies(url, "puppeteer", function (err, cookies) {
-        if (err) {
-          console.log(err, "error");
-          return;
-        }
-        // console.log(cookies, 'cookies');
-        resolve(cookies);
-      }) // e.g. 'Profile 2'
-  );
-}
