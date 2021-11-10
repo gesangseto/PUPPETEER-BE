@@ -3,11 +3,19 @@ const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
 const perf = require("execution-time")();
-const puppeteer = require("puppeteer-core");
 const moment = require("moment");
+
+const puppeteer = require("puppeteer-extra");
+// Add stealth plugin and use defaults (all tricks to hide puppeteer usage)
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+puppeteer.use(StealthPlugin());
+// Add adblocker plugin to block all ads and trackers (saves bandwidth)
+const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker");
+puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 
 exports.execution = async function (req, res) {
   let now = moment().format("YYYY-MM-DD HH:mm:ss").toString();
+  let error_step = 0;
   var data = { data: req.body };
   try {
     // LINE WAJIB DIBAWA
@@ -49,36 +57,66 @@ exports.execution = async function (req, res) {
     }
 
     let _header = check.data[0];
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(_header.puppeteer_url);
     // EXECUTION PUPPETEER
+    // EXECUTION PUPPETEER
+    // EXECUTION PUPPETEER
+    // EXECUTION PUPPETEER
+    // EXECUTION PUPPETEER
+    // EXECUTION PUPPETEER
+    // EXECUTION PUPPETEER
+    console.log("======================== START ==========================");
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(_header.puppeteer_url, {
+      waitUntil: "networkidle0",
+    });
+    await page.screenshot({
+      path: `screenshoot/${puppeteer_id}_${0}.png`,
+    });
+    console.log("step", 0);
+    // const cookies = await getCookiesChroome(_header.puppeteer_url);
+    // await page.setCookie(...cookies);
+    page.setViewport({ width: 1366, height: 768 });
     for (let i = 0; i < step.length; ++i) {
+      error_step += 1;
+      console.log("step", i + 1);
       let it = step[i];
       let delay = it.next_delay ?? 0;
       // Jika Ada URL
       if (it.url) {
-        await page.goto(_header.puppeteer_url);
+        await page.goto(_header.puppeteer_url, {
+          waitUntil: "networkidle0",
+        });
       }
-      if (it.type && it.type == "form") {
+      if (it.type && it.element_name && it.type == "form") {
         await page.type(`${it.element_name}`, `${it.command_text}`);
+        if (it.command_keyboard) {
+          await page.keyboard.press(`${it.command_keyboard}`);
+        }
       } else if (it.type && it.type == "button") {
         page.click(`${it.element_name}`);
       }
-      if (it.command_keyboard) {
-        await page.keyboard.press(`${it.command_keyboard}`);
+      if (it.wait_full_load == "true") {
+        await page.waitForNavigation({ waitUntil: "networkidle2" });
+      } else if (it.wait_full_load == "false") {
+        await page.waitForNavigation({ waitUntil: "networkidle0" });
       }
 
-      await page.waitForNavigation({ waitUntil: "networkidle0", timeout: 0 });
-      await page.screenshot({ path: `assets/${puppeteer_id}_${i + 1}.png` });
+      await page.screenshot({
+        path: `screenshoot/${puppeteer_id}_${i + 1}.png`,
+      });
       await utils.delay(delay);
     }
     await browser.close();
     // END OF EXECUTION PUPPETEER
+    // END OF EXECUTION PUPPETEER
+    // END OF EXECUTION PUPPETEER
+    // END OF EXECUTION PUPPETEER
+    // END OF EXECUTION PUPPETEER
     return response.response(check, res);
   } catch (error) {
     data.error = true;
-    data.message = `${error}`;
+    data.message = `Have Error On step ${error_step} : ${error}`;
     return response.response(data, res);
   }
 };

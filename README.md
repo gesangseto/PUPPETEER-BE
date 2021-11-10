@@ -1,10 +1,10 @@
 # Base Administrator
 
-Programming Language : Nodejs - Express
-
-How to install :
-git clone https://github.com/gesangseto/BASE-ADMINISTRATOR-BE
-npm install
+npm install --global windows-build-tools
+OR
+npm install --global windows-build-tools@4.0.0
+OR
+npm install --g --production windows-build-tools@4.0.0
 
 How to running :
 

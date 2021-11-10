@@ -2,6 +2,7 @@
 const response = require("../response");
 const models = require("../models");
 const perf = require("execution-time")();
+const fs = require("fs");
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
@@ -35,7 +36,27 @@ exports.get = async function (req, res) {
       var end = parseInt(start) + parseInt(req.query.limit);
       $query += ` LIMIT ${start},${end} `;
     }
+    $query += ` ORDER BY step ASC`;
     const check = await models.get_query($query);
+    let newData = [];
+    for (const it of check.data) {
+      let tmp = it;
+      tmp.screenshoot = null;
+      if (fs.existsSync(`./screenshoot/${it.puppeteer_id}_${it.step}.png`)) {
+        tmp.screenshoot = `${it.puppeteer_id}_${it.step}.png`;
+      }
+
+      if (req.query.puppeteer_detail_id && tmp.screenshoot) {
+        tmp.screenshoot = fs.readFileSync(
+          `./screenshoot/${it.puppeteer_id}_${it.step}.png`,
+          {
+            encoding: "base64",
+          }
+        );
+      }
+      newData.push(tmp);
+    }
+    check.data = newData;
     return response.response(check, res);
   } catch (error) {
     data.error = true;
