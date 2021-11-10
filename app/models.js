@@ -123,7 +123,7 @@ async function insert_query({ data, key, table }) {
       }
     }
     if (isColumAvalaible) {
-      if (it != null) {
+      if (it != null && it != "") {
         if (moment(it, moment.ISO_8601, true).isValid() && !isInt(it)) {
           it = moment(it).format("YYYY-MM-DD HH:mm:ss");
         }
@@ -179,7 +179,7 @@ async function update_query({ data, key, table }) {
       }
     }
     if (isColumAvalaible) {
-      if (it != null && it != "created_at") {
+      if (it != null && it != "" && it != "created_at") {
         if (moment(it, moment.ISO_8601, true).isValid() && !isInt(it)) {
           it = moment(it).format("YYYY-MM-DD HH:mm:ss");
         }

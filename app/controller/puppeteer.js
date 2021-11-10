@@ -14,7 +14,6 @@ const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker");
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 
 exports.execution = async function (req, res) {
-  let now = moment().format("YYYY-MM-DD HH:mm:ss").toString();
   let error_step = 0;
   var data = { data: req.body };
   try {
@@ -67,9 +66,7 @@ exports.execution = async function (req, res) {
     console.log("======================== START ==========================");
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
-    await page.goto(_header.puppeteer_url, {
-      waitUntil: "networkidle0",
-    });
+    await page.goto(_header.puppeteer_url, { waitUntil: "networkidle0" });
     await page.screenshot({
       path: `screenshoot/${puppeteer_id}_${0}.png`,
     });
@@ -79,45 +76,57 @@ exports.execution = async function (req, res) {
     page.setViewport({ width: 1366, height: 768 });
     for (let i = 0; i < step.length; ++i) {
       let it = step[i];
-      let delay = it.delay ?? 0;
-      let timeout = it.timeout_execution ?? 1000;
-      await utils.delay(delay);
       error_step = it.step;
       console.log("step", it.step);
-      // Jika Ada URL
-      if (it.url) {
-        await page.goto(_header.puppeteer_url, {
-          waitUntil: "networkidle0",
-        });
-      }
-      if (it.element_name) {
-        await page.waitForSelector(`${it.element_name}`, {
-          visible: true,
-          timeout: timeout,
-        });
-      }
-      if (it.type && it.element_name && it.type == "form") {
-        await page.type(`${it.element_name}`, `${it.command_text}`);
-        if (it.command_keyboard) {
-          await page.keyboard.press(`${it.command_keyboard}`);
+      let timeout = it.timeout_execution ?? 1000;
+      // LOOP IF SET
+      let loop = it.looping_execution ?? 1;
+      for (let l = 0; l < loop; ++l) {
+        let delay = it.delay ?? 0;
+        // Jika Ada URL
+        await utils.delay(delay);
+        if (it.url) {
+          await page.goto(_header.puppeteer_url, {
+            waitUntil: "networkidle0",
+          });
         }
-      } else if (it.type && it.type == "button") {
-        page.click(`${it.element_name}`);
-      }
-      if (it.wait_full_load == "true") {
-        await page.waitForNavigation({
-          waitUntil: "networkidle2",
-          timeout: timeout,
+        if (it.element_name) {
+          await page.waitForSelector(`${it.element_name}`, {
+            visible: true,
+            timeout: timeout,
+          });
+        }
+        let now = moment().format("YYYY-MM-DD HH:mm:ss");
+        let exec_time = moment(it.execution_time ?? now).format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
+        var delay_duration = moment.duration(exec_time.diff(now));
+        if (delay_duration > 0) {
+          await utils.delay(delay_duration);
+        }
+        if (it.type && it.element_name && it.type == "form") {
+          await page.type(`${it.element_name}`, `${it.command_text}`);
+          if (it.command_keyboard) {
+            await page.keyboard.press(`${it.command_keyboard}`);
+          }
+        } else if (it.type && it.type == "button") {
+          page.click(`${it.element_name}`);
+        }
+        if (it.wait_full_load == "true") {
+          await page.waitForNavigation({
+            waitUntil: "networkidle2",
+            timeout: timeout,
+          });
+        } else if (it.wait_full_load == "false") {
+          await page.waitForNavigation({
+            waitUntil: "networkidle0",
+            timeout: timeout,
+          });
+        }
+        await page.screenshot({
+          path: `screenshoot/${puppeteer_id}_${i + 1}.png`,
         });
-      } else if (it.wait_full_load == "false") {
-        await page.waitForNavigation({
-          waitUntil: "networkidle0",
-          timeout: timeout,
-        });
       }
-      await page.screenshot({
-        path: `screenshoot/${puppeteer_id}_${i + 1}.png`,
-      });
     }
     await browser.close();
     // END OF EXECUTION PUPPETEER
