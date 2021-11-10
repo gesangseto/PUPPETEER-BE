@@ -4,8 +4,10 @@ const models = require("../models");
 const utils = require("../utils");
 const perf = require("execution-time")();
 const puppeteer = require("puppeteer-core");
+const moment = require("moment");
 
 exports.execution = async function (req, res) {
+  let now = moment().format("YYYY-MM-DD HH:mm:ss").toString();
   var data = { data: req.body };
   try {
     // LINE WAJIB DIBAWA
@@ -59,9 +61,9 @@ exports.execution = async function (req, res) {
         await page.goto(_header.puppeteer_url);
       }
       if (it.type && it.type == "form") {
-        await page.type(`${it.command_element}`, `${it.command_text}`);
+        await page.type(`${it.element_name}`, `${it.command_text}`);
       } else if (it.type && it.type == "button") {
-        page.click(`${it.command_element}`);
+        page.click(`${it.element_name}`);
       }
       if (it.command_keyboard) {
         await page.keyboard.press(`${it.command_keyboard}`);
