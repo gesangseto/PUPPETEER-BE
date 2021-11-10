@@ -103,7 +103,8 @@ async function insert_query({ data, key, table }) {
     total_row: 0,
     message: "Success",
   };
-  var column = `SELECT COLUMN_NAME  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${table}' AND TABLE_SCHEMA ='${process.env.DB_DATABASE}'`; column = await exec_query(column);
+  var column = `SELECT COLUMN_NAME  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${table}' AND TABLE_SCHEMA ='${process.env.DB_DATABASE}'`;
+  column = await exec_query(column);
   if (column.error) {
     data_set.error = true;
     data_set.message = column.message || "Oops, something wrong";
@@ -123,7 +124,7 @@ async function insert_query({ data, key, table }) {
     }
     if (isColumAvalaible) {
       if (it != null) {
-        if (moment(it, moment.ISO_8601, true).isValid()) {
+        if (moment(it, moment.ISO_8601, true).isValid() && !isInt(it)) {
           it = moment(it).format("YYYY-MM-DD HH:mm:ss");
         }
         key.push(k);
@@ -179,7 +180,7 @@ async function update_query({ data, key, table }) {
     }
     if (isColumAvalaible) {
       if (it != null && it != "created_at") {
-        if (moment(it, moment.ISO_8601, true).isValid()) {
+        if (moment(it, moment.ISO_8601, true).isValid() && !isInt(it)) {
           it = moment(it).format("YYYY-MM-DD HH:mm:ss");
         }
         _data.push(` ${k} = '${it}'`);
@@ -249,6 +250,15 @@ async function delete_query({ data, key, table, deleted = true }) {
         return resolve(data_set);
       });
     })
+  );
+}
+
+function isInt(value) {
+  return (
+    !isNaN(value) &&
+    (function (x) {
+      return (x | 0) === x;
+    })(parseFloat(value))
   );
 }
 

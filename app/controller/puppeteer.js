@@ -78,14 +78,22 @@ exports.execution = async function (req, res) {
     // await page.setCookie(...cookies);
     page.setViewport({ width: 1366, height: 768 });
     for (let i = 0; i < step.length; ++i) {
-      error_step += 1;
-      console.log("step", i + 1);
       let it = step[i];
-      let delay = it.next_delay ?? 0;
+      let delay = it.delay ?? 0;
+      let timeout = it.timeout_execution ?? 1000;
+      await utils.delay(delay);
+      error_step = it.step;
+      console.log("step", it.step);
       // Jika Ada URL
       if (it.url) {
         await page.goto(_header.puppeteer_url, {
           waitUntil: "networkidle0",
+        });
+      }
+      if (it.element_name) {
+        await page.waitForSelector(`${it.element_name}`, {
+          visible: true,
+          timeout: timeout,
         });
       }
       if (it.type && it.element_name && it.type == "form") {
@@ -97,15 +105,19 @@ exports.execution = async function (req, res) {
         page.click(`${it.element_name}`);
       }
       if (it.wait_full_load == "true") {
-        await page.waitForNavigation({ waitUntil: "networkidle2" });
+        await page.waitForNavigation({
+          waitUntil: "networkidle2",
+          timeout: timeout,
+        });
       } else if (it.wait_full_load == "false") {
-        await page.waitForNavigation({ waitUntil: "networkidle0" });
+        await page.waitForNavigation({
+          waitUntil: "networkidle0",
+          timeout: timeout,
+        });
       }
-
       await page.screenshot({
         path: `screenshoot/${puppeteer_id}_${i + 1}.png`,
       });
-      await utils.delay(delay);
     }
     await browser.close();
     // END OF EXECUTION PUPPETEER
