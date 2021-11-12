@@ -268,16 +268,17 @@ exports.delete = async function (req, res) {
         return response.response(data, res);
       }
     }
-    // LINE WAJIB DIBAWA
-    // var _detail = await models.delete_query({
-    //   data: req.body,
-    //   table: "puppeteer_detail",
-    //   key: "puppeteer_id",
-    // });
+    await models.delete_query({
+      data: req.body,
+      table: "puppeteer_detail",
+      key: "puppeteer_id",
+      force_delete: true,
+    });
     var _header = await models.delete_query({
       data: req.body,
       table: "puppeteer",
       key: "puppeteer_id",
+      force_delete: true,
     });
     return response.response(_header, res);
   } catch (error) {

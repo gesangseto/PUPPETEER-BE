@@ -77,7 +77,8 @@ exports.execution = async function (req, res) {
       path: `screenshoot/${puppeteer_id}_${0}.png`,
     });
     console.log("step", 0);
-    page.setViewport({ width: 1920, height: 1080 });
+    page.setViewport({ width: 1920, height: 1920 });
+    // page.setViewport({ width: 400, height: 534 });
     for (let i = 0; i < step.length; ++i) {
       let it = step[i];
       error_step = it.step;
@@ -87,12 +88,13 @@ exports.execution = async function (req, res) {
       for (let l = 0; l < loop; ++l) {
         if (it.skip_error == "true") {
           try {
-            await runningBot(it, page);
+            await runningBot(it, page, res);
+            l = loop;
           } catch (error) {
             console.log("some error on step: ", it.step);
           }
         } else {
-          await runningBot(it, page);
+          await runningBot(it, page, res);
         }
       }
     }
@@ -110,7 +112,7 @@ exports.execution = async function (req, res) {
   }
 };
 
-async function runningBot(it, page) {
+async function runningBot(it, page, res) {
   let puppeteer_id = it.puppeteer_id;
   let timeout = it.timeout_execution ?? 1000;
   let delay = it.delay ?? 0;
@@ -126,14 +128,15 @@ async function runningBot(it, page) {
     await utils.delay(delay_duration);
   }
   if (it.url) {
-    console.log("Go to: ", it.url);
     await page.goto(it.url, {
       waitUntil: "networkidle0",
     });
   }
+
   await page.screenshot({
     path: `screenshoot/${puppeteer_id}_${it.step}_0.png`,
   });
+
   if (it.element_name && it.wait_element == "true") {
     console.log("Wait selector: ", it.element_name);
     await page.waitForSelector(`${it.element_name}`, {
@@ -141,35 +144,38 @@ async function runningBot(it, page) {
       timeout: timeout,
     });
   }
-  if (it.type && it.element_name && it.type == "form") {
-    console.log("Wait type: ", it.type);
-    await page.type(`${it.element_name}`, `${it.command_text}`);
+
+  console.log("Wait type: ", it.type);
+  if (it.type && it.type == "form") {
+    if (it.element_name) {
+      await page.type(`${it.element_name}`, `${it.command_text}`);
+    } else {
+      await page.keyboard.type(`${it.command_text}`);
+    }
     if (it.command_keyboard) {
       await page.keyboard.press(`${it.command_keyboard}`);
     }
   } else if (it.type && it.type == "button") {
-    console.log("Wait type: ", it.type);
-    if (it.wait_full_load != "none") {
-      await Promise.all([
-        page.click(`${it.element_name}`),
-        page.waitForNavigation({ waitUntil: "networkidle2", timeout: timeout }),
-      ]);
-    } else {
-      page.click(`${it.element_name}`);
-    }
+    page.click(`${it.element_name}`);
   }
+  console.log("Wait to load: ", it.wait_full_load);
   if (it.wait_full_load == "true") {
-    console.log("Wait to load:", it.wait_full_load);
     await page.waitForNavigation({
       waitUntil: "networkidle2",
       timeout: timeout,
     });
   } else if (it.wait_full_load == "false") {
-    console.log("Wait to load: ", it.wait_full_load);
     await page.waitForNavigation({
       waitUntil: "networkidle0",
       timeout: timeout,
     });
+  }
+  if (it.open_to_browser == "true") {
+    let data = {};
+    data.error = false;
+    data.message = `Link Opened`;
+    data.data = [{ url: page.url() }];
+    response.response(data, res);
   }
   await page.screenshot({
     path: `screenshoot/${puppeteer_id}_${it.step}.png`,

@@ -141,6 +141,7 @@ exports.delete = async function (req, res) {
       data: req.body,
       table: "puppeteer_detail",
       key: "puppeteer_detail_id",
+      force_delete: true,
     });
     return response.response(_res, res);
   } catch (error) {
