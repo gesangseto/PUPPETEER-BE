@@ -49,12 +49,15 @@ module.exports = function (app) {
   app.route("/api/master/user").delete(user.delete);
 
   // PUPPETEER
+  var puppeteer_bot = require("./controller/puppeteer_bot");
+  app.route("/api/puppeteer/execution").post(puppeteer_bot.execution);
+
   var puppeteer = require("./controller/puppeteer");
   app.route("/api/puppeteer").get(puppeteer.get);
   app.route("/api/puppeteer").put(puppeteer.insert);
   app.route("/api/puppeteer").post(puppeteer.update);
   app.route("/api/puppeteer").delete(puppeteer.delete);
-  app.route("/api/puppeteer/execution").post(puppeteer.execution);
+  app.route("/api/puppeteer/duplicate").post(puppeteer.duplicate);
 
   var puppeteer_detail = require("./controller/puppeteer_detail");
   app.route("/api/puppeteer/detail").get(puppeteer_detail.get);
