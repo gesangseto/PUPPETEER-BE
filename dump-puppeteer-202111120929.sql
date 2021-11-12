@@ -63,8 +63,9 @@ CREATE TABLE `puppeteer` (
   `created_by` int(11) DEFAULT NULL,
   `puppeteer_url` text,
   `puppeteer_execution_time` timestamp NULL DEFAULT NULL,
+  `use_cookies` int(11) DEFAULT NULL,
   PRIMARY KEY (`puppeteer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1636526032293 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1636683997861 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +74,7 @@ CREATE TABLE `puppeteer` (
 
 LOCK TABLES `puppeteer` WRITE;
 /*!40000 ALTER TABLE `puppeteer` DISABLE KEYS */;
-INSERT INTO `puppeteer` VALUES (1636526032292,'Shopee','-',NULL,NULL,1,1,'https://shopee.co.id/',NULL);
+INSERT INTO `puppeteer` VALUES (1636526032292,'Shopee','-',NULL,NULL,1,1,'https://shopee.co.id/',NULL,1),(1636683997860,'Shopee','-',NULL,NULL,1,1,'https://shopee.co.id/',NULL,1);
 /*!40000 ALTER TABLE `puppeteer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,10 +95,14 @@ CREATE TABLE `puppeteer_detail` (
   `url` text,
   `type` varchar(100) DEFAULT NULL,
   `element_name` text,
+  `wait_element` varchar(10) DEFAULT NULL,
   `command_text` varchar(100) DEFAULT NULL,
   `command_keyboard` varchar(100) DEFAULT NULL,
   `wait_full_load` varchar(6) DEFAULT NULL,
   `timeout_execution` int(11) DEFAULT NULL,
+  `time_execution` timestamp NULL DEFAULT NULL,
+  `looping_execution` int(11) DEFAULT NULL,
+  `skip_error` varchar(10) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
@@ -105,7 +110,7 @@ CREATE TABLE `puppeteer_detail` (
   PRIMARY KEY (`puppeteer_detail_id`),
   UNIQUE KEY `puppeteer_detail_UN` (`puppeteer_id`,`step`),
   CONSTRAINT `puppeteer_detail_FK` FOREIGN KEY (`puppeteer_id`) REFERENCES `puppeteer` (`puppeteer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -114,7 +119,7 @@ CREATE TABLE `puppeteer_detail` (
 
 LOCK TABLES `puppeteer_detail` WRITE;
 /*!40000 ALTER TABLE `puppeteer_detail` DISABLE KEYS */;
-INSERT INTO `puppeteer_detail` VALUES (15,1636526032292,'Goto Login Page','-',2,999,'','button','#main > div > div._193wCc._3cVWns > div.shopee-top.shopee-top--sticky > div.navbar-wrapper.container-wrapper > div > ul > a:nth-child(5)','',NULL,'null',50000,NULL,NULL,1,NULL),(16,1636526032292,'Fill Email','-',3,1000,'','form','#main > div > div._1229NB > div > div > form > div > div._3e4zDA > div._3nZHpB > div._3mizNj > input','082122222657',NULL,'null',NULL,NULL,NULL,1,NULL),(17,1636526032292,'Fill Password','-',4,5000,'','form','#main > div > div._1229NB > div > div > form > div > div._3e4zDA > div._35M4-Y > div._3mizNj > input','Bilal123@','Enter','true',NULL,NULL,NULL,1,NULL),(18,1636526032292,'Verification Link','',5,5000,'','button','#main > div > div._1229NB > div > div > div > div._311AHs._34gSQ- > div > div.b6uJpH > div > button','',NULL,'true',50000,NULL,NULL,1,NULL),(19,1636526032292,'Remove Add','-',1,899,'','button','#modal > div > div > div.shopee-popup__container > div','',NULL,'null',50000,NULL,NULL,1,NULL),(20,1636526032292,'Send link to WA','-',6,5000,'','button','#modal > aside > div.OZxFMu.undefined > div > div.dsyKcA._3P6yMq > button._1ruZ5a._3Nrkgj._3tZeq7.hh2rFL._3_offS','',NULL,'null',NULL,NULL,NULL,1,NULL),(21,1636526032292,'Remove Ad','-',7,5000,'','button','#modal > div > div > div.shopee-popup__container > div','',NULL,'null',NULL,NULL,NULL,1,NULL),(22,1636526032292,'Coba mencari','-',8,1000,'','form','#main > div > div._193wCc._3cVWns > div.shopee-top.shopee-top--sticky > div.container-wrapper.header-with-search-wrapper > div > div.header-with-search__search-section > div.shopee-searchbar > div > form > input','Iphone XR','Enter','true',NULL,NULL,NULL,1,NULL);
+INSERT INTO `puppeteer_detail` VALUES (19,1636526032292,'Remove Add','-',1,100,'','button','#modal > div > div > div.shopee-popup__container > div','false','',NULL,'none',50000,NULL,NULL,'true',NULL,NULL,1,NULL),(24,1636526032292,'Go to product',NULL,2,NULL,'https://shopee.co.id/SEKAI-Oven-Listrik-Low-Watt-Kapasitas-12L-UkL-9L-UkD-Pemanggang-Makanan-Serbaguna-OV-090-i.25609237.2113793273',NULL,NULL,NULL,NULL,NULL,'none',50000,'2021-11-12 08:11:00',1,NULL,NULL,NULL,1,NULL),(27,1636526032292,'Buy Now',NULL,3,NULL,NULL,'button','#main > div > div._193wCc > div.page-product.page-product--mall > div > div.product-briefing.flex.card.zINA0e > div.flex.flex-auto._3-GQHh > div > div:nth-child(5) > div > div > button.btn.btn-solid-primary.btn--l._3Kiuzg','false',NULL,NULL,'false',50000,NULL,1,NULL,NULL,NULL,1,NULL),(28,1636526032292,'Clcik empty',NULL,4,2000,NULL,'button','#main > div > div:nth-child(3)','false',NULL,NULL,'none',1000,NULL,1,'true',NULL,NULL,1,NULL),(29,1636526032292,'Buat Pesanan',NULL,6,1000,NULL,'button','#main > div > div._193wCc > div._1WlhIE > div.f23wB9 > div.PC1-mc > div._3swGZ9 > button','false',NULL,NULL,'false',50000,NULL,3,'true',NULL,NULL,1,NULL),(30,1636526032292,'Payment checkout','-',7,NULL,NULL,'button','#main > div > div:nth-child(2) > div.payment-safe-page > div > div.pcmall-paymentfe_1khIIT > div > button','true',NULL,NULL,'none',50000,NULL,3,'true',NULL,NULL,1,NULL),(32,1636526032292,'Second Checkout',NULL,5,NULL,NULL,'button','#main > div > div:nth-child(2) > div._164M6a > div > div:nth-child(3) > div._2jol0L > div.W2HjBQ.zzOmij > button.shopee-button-solid.shopee-button-solid--primary','false',NULL,NULL,'false',50000,NULL,NULL,'true',NULL,NULL,1,NULL),(33,1636683997860,'Remove Add','-',1,100,NULL,'button','#modal > div > div > div.shopee-popup__container > div','false',NULL,NULL,'none',50000,NULL,NULL,'true',NULL,NULL,1,NULL),(34,1636683997860,'Go to product',NULL,2,NULL,'https://shopee.co.id/SEKAI-Oven-Listrik-Low-Watt-Kapasitas-12L-UkL-9L-UkD-Pemanggang-Makanan-Serbaguna-OV-090-i.25609237.2113793273',NULL,NULL,NULL,NULL,NULL,'none',50000,'2021-11-12 08:11:00',1,NULL,NULL,NULL,1,NULL),(35,1636683997860,'Buy Now',NULL,3,NULL,NULL,'button','#main > div > div._193wCc > div.page-product.page-product--mall > div > div.product-briefing.flex.card.zINA0e > div.flex.flex-auto._3-GQHh > div > div:nth-child(5) > div > div > button.btn.btn-solid-primary.btn--l._3Kiuzg','false',NULL,NULL,'false',50000,NULL,1,NULL,NULL,NULL,1,NULL),(36,1636683997860,'Clcik empty',NULL,4,2000,NULL,'button','#main > div > div:nth-child(3)','false',NULL,NULL,'none',1000,NULL,1,'true',NULL,NULL,1,NULL),(37,1636683997860,'Buat Pesanan',NULL,6,1000,NULL,'button','#main > div > div._193wCc > div._1WlhIE > div.f23wB9 > div.PC1-mc > div._3swGZ9 > button','false',NULL,NULL,'false',50000,NULL,3,'true',NULL,NULL,1,NULL),(38,1636683997860,'Payment checkout','-',7,NULL,NULL,'button','#main > div > div:nth-child(2) > div.payment-safe-page > div > div.pcmall-paymentfe_1khIIT > div > button','true',NULL,NULL,'none',50000,NULL,3,'true',NULL,NULL,1,NULL),(39,1636683997860,'Second Checkout',NULL,5,NULL,NULL,'button','#main > div > div:nth-child(2) > div._164M6a > div > div:nth-child(3) > div._2jol0L > div.W2HjBQ.zzOmij > button.shopee-button-solid.shopee-button-solid--primary','false',NULL,NULL,'false',50000,NULL,NULL,'true',NULL,NULL,1,NULL);
 /*!40000 ALTER TABLE `puppeteer_detail` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -326,7 +331,7 @@ CREATE TABLE `user_authentication` (
   `user_agent` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`authentication_id`),
   UNIQUE KEY `user_authentication_UN` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -335,7 +340,7 @@ CREATE TABLE `user_authentication` (
 
 LOCK TABLES `user_authentication` WRITE;
 /*!40000 ALTER TABLE `user_authentication` DISABLE KEYS */;
-INSERT INTO `user_authentication` VALUES (16,1,'a77ba49574c9f637fe93aea91ef11c9fbec234822bacd13088c6132dfdc2902f','2021-10-24 15:01:25','2021-09-24 08:01:25',NULL),(17,1,'6d14e6bdbcb139fedeaa4c37b192c79e1fdbb0782530eaf7ce62a8510ffe282c','2021-10-24 15:09:11','2021-09-24 08:09:11',NULL),(18,1,'ac3f367c3624de5ecfb5c041c095c85278004345388f4f8d581f48643c7cc550','2021-10-24 15:14:15','2021-09-24 08:14:15',NULL),(19,1,'818d2c6baea706901b9b8a515355f12e7772decefec96ae27155f9dcb298666a','2021-10-24 15:14:34','2021-09-24 08:14:35',NULL),(20,1,'cdadfb9828f1361b90079d6f1b19ad2f8c27319d283dde4afb95c7627ad8d62e','2021-10-24 15:15:02','2021-09-24 08:15:02',NULL),(21,1,'6ff228a1bb2b79d68dc7a23e519cc0ed9a6b0d44a8ac71fc058462c14cf318a1','2021-10-24 19:51:45','2021-09-24 12:51:46',NULL),(22,1,'5e4a95a512efb46402c99e62d58c71b383116e7621f5c10464292e5374d92e4c','2021-10-24 19:55:35','2021-09-24 12:55:37',NULL),(23,1,'c5f1d0286cce98c9ea3af11e1ac47b485e14511215ab266e0db888286b20300d','2021-10-24 20:42:49','2021-09-24 13:42:52',NULL),(24,1,'9975beb601cc16f4daba73ed00458da283c7003372a4458a111485d947d38bad','2021-10-24 21:42:13','2021-09-24 14:42:16',NULL),(25,1,'9f6793f0094cc5cae1f8b87ad8f1f6a468a022a78d4f5c7fbd7357238897c69b','2021-10-24 22:07:15','2021-09-24 15:07:18',NULL),(26,1,'cef86f12ec82aa273b3e2efe97e1f7e302a9ed9efc7cac7cb2956d0743aa2edd','2021-10-24 22:15:58','2021-09-24 15:16:01',NULL),(27,1,'d3c64a6ef95942d05ddebc3a586c16618ba44e7375fec03884c7c457f6247fad','2021-10-24 22:22:55','2021-09-24 15:22:58',NULL),(28,1,'5ff9c37f2a8d68a8181d3fc5c9377e9afa9d8893d6dc0cd5041203e171bc4057','2021-10-26 05:35:39','2021-09-26 05:35:39',NULL),(29,1,'a219be2ffd5be9c0dd9696a649097a10c35de7a0a50c3a2f36e5953712f5bfdc','2021-10-27 08:49:36','2021-09-27 01:49:37',NULL),(30,1,'6067aa46f2a5b979e62e81a39c0e5b8032343c8f5aecbcb6d2b260ee3a29e5f7','2021-10-27 09:24:44','2021-09-27 09:24:45',NULL),(31,1,'6d671bf84363378a5bb48f89c696c8e74a1be501e0b282fcd2452791322a98fc','2021-10-27 13:10:39','2021-09-27 06:10:40',NULL),(32,1,'a96c2204a8f5e7ad531c2c967863f304b3e8ea24d6d00d8df688387366bf37b1','2021-12-09 13:44:52','2021-11-09 06:44:53',NULL),(33,1,'034c3b4069b85cfe2fd9f0e23f5c1149f72017ab85686c4de4fa55846c1a459b','2021-12-09 19:57:57','2021-11-09 12:57:58',NULL),(34,1,'00e1ce680556cf0f347f421dfa6c6ce7ef98bbae9863d1ea3d08198d7ff4f88b','2021-12-09 20:01:25','2021-11-09 13:01:26',NULL),(35,1,'c06fe5c5652d2c2cd037804993265fe19936c63a8f6b755a4a67ac582e5057ce','2021-12-09 20:02:01','2021-11-09 13:02:02',NULL),(36,1,'c8ea36ed70d3fa2d798110662cd9bc8a4e5278f230cdeff54ccd764a26a5a5b5','2021-12-09 20:50:23','2021-11-09 13:50:25',NULL),(37,1,'92a36e3b1673a1798d0c65d28b562386df7414298cec4f27ac949b586e7e90de','2021-12-09 20:52:51','2021-11-09 13:52:53',NULL),(38,1,'3e718725809c92df183ddbbf51b40c8c646a30c1787d27d0cd1765ac9f57cec7','2021-12-10 08:38:49','2021-11-10 01:38:51',NULL),(39,1,'b50e5aaf4d8bf628dbab717c66d2d7e63aac781b2f0bf7c42386a691d3a180fc','2021-12-10 13:31:01','2021-11-10 06:31:04',NULL),(40,1,'0df6ea9fbe84181243e2b25aeb7e1a1b589022de79bdef3ad94c188313f1c94b','2021-12-10 16:12:45','2021-11-10 09:12:46',NULL);
+INSERT INTO `user_authentication` VALUES (16,1,'a77ba49574c9f637fe93aea91ef11c9fbec234822bacd13088c6132dfdc2902f','2021-10-24 15:01:25','2021-09-24 08:01:25',NULL),(17,1,'6d14e6bdbcb139fedeaa4c37b192c79e1fdbb0782530eaf7ce62a8510ffe282c','2021-10-24 15:09:11','2021-09-24 08:09:11',NULL),(18,1,'ac3f367c3624de5ecfb5c041c095c85278004345388f4f8d581f48643c7cc550','2021-10-24 15:14:15','2021-09-24 08:14:15',NULL),(19,1,'818d2c6baea706901b9b8a515355f12e7772decefec96ae27155f9dcb298666a','2021-10-24 15:14:34','2021-09-24 08:14:35',NULL),(20,1,'cdadfb9828f1361b90079d6f1b19ad2f8c27319d283dde4afb95c7627ad8d62e','2021-10-24 15:15:02','2021-09-24 08:15:02',NULL),(21,1,'6ff228a1bb2b79d68dc7a23e519cc0ed9a6b0d44a8ac71fc058462c14cf318a1','2021-10-24 19:51:45','2021-09-24 12:51:46',NULL),(22,1,'5e4a95a512efb46402c99e62d58c71b383116e7621f5c10464292e5374d92e4c','2021-10-24 19:55:35','2021-09-24 12:55:37',NULL),(23,1,'c5f1d0286cce98c9ea3af11e1ac47b485e14511215ab266e0db888286b20300d','2021-10-24 20:42:49','2021-09-24 13:42:52',NULL),(24,1,'9975beb601cc16f4daba73ed00458da283c7003372a4458a111485d947d38bad','2021-10-24 21:42:13','2021-09-24 14:42:16',NULL),(25,1,'9f6793f0094cc5cae1f8b87ad8f1f6a468a022a78d4f5c7fbd7357238897c69b','2021-10-24 22:07:15','2021-09-24 15:07:18',NULL),(26,1,'cef86f12ec82aa273b3e2efe97e1f7e302a9ed9efc7cac7cb2956d0743aa2edd','2021-10-24 22:15:58','2021-09-24 15:16:01',NULL),(27,1,'d3c64a6ef95942d05ddebc3a586c16618ba44e7375fec03884c7c457f6247fad','2021-10-24 22:22:55','2021-09-24 15:22:58',NULL),(28,1,'5ff9c37f2a8d68a8181d3fc5c9377e9afa9d8893d6dc0cd5041203e171bc4057','2021-10-26 05:35:39','2021-09-26 05:35:39',NULL),(29,1,'a219be2ffd5be9c0dd9696a649097a10c35de7a0a50c3a2f36e5953712f5bfdc','2021-10-27 08:49:36','2021-09-27 01:49:37',NULL),(30,1,'6067aa46f2a5b979e62e81a39c0e5b8032343c8f5aecbcb6d2b260ee3a29e5f7','2021-10-27 09:24:44','2021-09-27 09:24:45',NULL),(31,1,'6d671bf84363378a5bb48f89c696c8e74a1be501e0b282fcd2452791322a98fc','2021-10-27 13:10:39','2021-09-27 06:10:40',NULL),(32,1,'a96c2204a8f5e7ad531c2c967863f304b3e8ea24d6d00d8df688387366bf37b1','2021-12-09 13:44:52','2021-11-09 06:44:53',NULL),(33,1,'034c3b4069b85cfe2fd9f0e23f5c1149f72017ab85686c4de4fa55846c1a459b','2021-12-09 19:57:57','2021-11-09 12:57:58',NULL),(34,1,'00e1ce680556cf0f347f421dfa6c6ce7ef98bbae9863d1ea3d08198d7ff4f88b','2021-12-09 20:01:25','2021-11-09 13:01:26',NULL),(35,1,'c06fe5c5652d2c2cd037804993265fe19936c63a8f6b755a4a67ac582e5057ce','2021-12-09 20:02:01','2021-11-09 13:02:02',NULL),(36,1,'c8ea36ed70d3fa2d798110662cd9bc8a4e5278f230cdeff54ccd764a26a5a5b5','2021-12-09 20:50:23','2021-11-09 13:50:25',NULL),(37,1,'92a36e3b1673a1798d0c65d28b562386df7414298cec4f27ac949b586e7e90de','2021-12-09 20:52:51','2021-11-09 13:52:53',NULL),(38,1,'3e718725809c92df183ddbbf51b40c8c646a30c1787d27d0cd1765ac9f57cec7','2021-12-10 08:38:49','2021-11-10 01:38:51',NULL),(39,1,'b50e5aaf4d8bf628dbab717c66d2d7e63aac781b2f0bf7c42386a691d3a180fc','2021-12-10 13:31:01','2021-11-10 06:31:04',NULL),(40,1,'0df6ea9fbe84181243e2b25aeb7e1a1b589022de79bdef3ad94c188313f1c94b','2021-12-10 16:12:45','2021-11-10 09:12:46',NULL),(41,1,'2af9d25caf49a7622863c17523b866dea70179da7ca50815a5ebbfe6252573db','2021-12-10 16:43:29','2021-11-10 09:43:30',NULL),(42,1,'bd6db276ed355c6bd29d0cb6d6da3769a97863f41882828922fff8eadb3d4899','2021-12-10 18:14:28','2021-11-10 11:14:28',NULL);
 /*!40000 ALTER TABLE `user_authentication` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -415,4 +420,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-10 16:15:29
+-- Dump completed on 2021-11-12  9:29:48
