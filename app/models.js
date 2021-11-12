@@ -129,6 +129,9 @@ async function insert_query({ data, key, table }) {
         }
         key.push(k);
         val.push(it);
+      } else if (it == "0") {
+        key.push(k);
+        val.push(it);
       }
     }
   }
@@ -184,10 +187,14 @@ async function update_query({ data, key, table }) {
           it = moment(it).format("YYYY-MM-DD HH:mm:ss");
         }
         _data.push(` ${k} = '${it}'`);
+      } else if (it == "0") {
+        _data.push(` ${k} = '${it}'`);
       }
     }
   }
   _data = _data.join(",");
+
+  console.log(data);
   var query_sql = `UPDATE ${table} SET ${_data} WHERE ${key}='${data[key]}'`;
   return await new Promise((resolve) =>
     pool.getConnection(function (err, connection) {

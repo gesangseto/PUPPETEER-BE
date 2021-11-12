@@ -71,7 +71,7 @@ exports.insert = async function (req, res) {
     perf.start();
 
     req.body.created_by = req.headers.user_id;
-    const require_data = ["puppeteer_detail_name", "puppeteer_id"];
+    const require_data = ["puppeteer_detail_name", "puppeteer_id", "step"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
         data.error = true;
@@ -100,6 +100,7 @@ exports.update = async function (req, res) {
       "puppeteer_detail_id",
       "puppeteer_id",
       "puppeteer_detail_name",
+      "step",
     ];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {

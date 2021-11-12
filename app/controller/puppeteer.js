@@ -83,7 +83,7 @@ exports.insert = async function (req, res) {
     }
     for (let it of puppeteer_detail) {
       // check detail
-      let require_detail = ["puppeteer_detail_name", "type"];
+      let require_detail = ["puppeteer_detail_name"];
       for (const row of require_detail) {
         if (!it[`${row}`]) {
           data.error = true;
@@ -139,7 +139,7 @@ exports.update = async function (req, res) {
     if (puppeteer_detail.length > 0) {
       for (let it of puppeteer_detail) {
         // check detail
-        let require_detail = ["puppeteer_id", "puppeteer_detail_name", "type"];
+        let require_detail = ["puppeteer_id", "puppeteer_detail_name"];
         for (const row of require_detail) {
           if (!it[`${row}`]) {
             data.error = true;
@@ -215,7 +215,7 @@ exports.duplicate = async function (req, res) {
         return response.response(data, res);
       }
     }
-    let id = re.body.puppeteer_id;
+    let id = req.body.puppeteer_id;
     let $query = `SELECT *
             FROM puppeteer AS a 
             WHERE puppeteer_id = ${id}`;
